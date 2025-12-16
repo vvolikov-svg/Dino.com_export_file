@@ -46,3 +46,26 @@ button{
   to{opacity:1}
 }
 
+/* КРАСНЫЙ ТРЕВОЖНЫЙ ЭФФЕКТ */
+.alert{
+  background:#300;
+  animation:shake 0.15s infinite;
+}
+
+@keyframes shake{
+  0%{transform:translate(0,0)}
+  25%{transform:translate(3px,1px)}
+  50%{transform:translate(-3px,0)}
+  75%{transform:translate(1px,-2px)}
+}
+
+/* КРАСНЫЙ ФИЛЬТР */
+.red-filter{
+  position:fixed;
+  inset:0;
+  background:rgba(255,0,0,0.25);
+  pointer-events:none;
+  display:none;
+}
+
+
