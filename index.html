@@ -2,54 +2,45 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dino Chase</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="style.css">
 
 <style>
-*{box-sizing:border-box}
 body{
   margin:0;
-  background:#000;
-  color:#fff;
-  font-family:Arial, sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100svh;
+  background:#111;
+  color:white;
+  font-family:Arial;
+  text-align:center;
   overflow:hidden;
 }
 
-/* МЕНЮ */
-#menu{
-  text-align:center;
-}
-button{
-  font-size:22px;
-  padding:12px 32px;
-  background:#39ff6a;
-  border:none;
-  cursor:pointer;
+#menu, #ending{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:#111;
 }
 
-/* ИГРА */
+button{
+  padding:15px 30px;
+  font-size:20px;
+}
+
 canvas{
   display:none;
-  background:#111;
-  border:2px solid #333;
+  background:#222;
+  margin:auto;
 }
 
-/* КРАСНЫЙ ФИЛЬТР */
-#red{
-  position:fixed;
-  inset:0;
-  background:rgba(255,0,0,0.25);
-  pointer-events:none;
-  display:none;
-}
-
-/* ТРЯСКА */
+/* тряска */
 .alert{
-  animation:shake .15s infinite;
+  animation:shake 0.15s infinite;
 }
 @keyframes shake{
   0%{transform:translate(0,0)}
@@ -58,126 +49,41 @@ canvas{
   75%{transform:translate(1px,-2px)}
 }
 
-/* КОНЦОВКА */
-#ending{
+/* красный фильтр */
+.red-filter{
+  position:fixed;
+  inset:0;
+  background:rgba(255,0,0,0.25);
+  pointer-events:none;
   display:none;
-  text-align:center;
 }
-#ending p{
-  opacity:0;
-  font-size:22px;
-  margin:10px;
-  animation:fade 2s forwards;
-}
-#ending p:nth-child(2){animation-delay:2s}
-#ending p:nth-child(3){animation-delay:4s}
-@keyframes fade{to{opacity:1}}
 </style>
 </head>
 
 <body>
 
+<!-- МЕНЮ -->
 <div id="menu">
   <h1>DINO RUN</h1>
-  <button onclick="startGame()">PLAY</button>
+  <button onclick="startGame()">ИГРАТЬ</button>
 </div>
 
+<!-- ИГРА -->
 <canvas id="game" width="600" height="200"></canvas>
 
-<div id="ending">
-  <p id="t1"></p>
-  <p id="t2"></p>
-  <p id="t3"></p>
+<!-- КОНЦОВКА -->
+<div id="ending" style="display:none">
+  <h2 id="t1"></h2>
+  <h2 id="t2"></h2>
+  <h2 id="t3"></h2>
+  <button onclick="location.reload()">Заново</button>
 </div>
 
-<div id="red"></div>
+<!-- КРАСНЫЙ ЭФФЕКТ -->
+<div id="red" class="red-filter"></div>
 
-<script>
-const menu = document.getElementById("menu");
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-const ending = document.getElementById("ending");
-const red = document.getElementById("red");
-
-let y=130, vy=0;
-let time=0;
-let running=false;
-let chase=false;
-let shadowX=-120;
-let ended=false;
-
-function startGame(){
-  menu.style.display="none";
-  canvas.style.display="block";
-  running=true;
-  loop();
-}
-
-function jump(){
-  if(y>=130) vy=-12;
-}
-addEventListener("click",jump);
-addEventListener("touchstart",jump);
-addEventListener("keydown",e=>{
-  if(e.key==="ArrowUp") jump();
-});
-
-function loop(){
-  if(!running) return;
-  ctx.clearRect(0,0,600,200);
-  time++;
-
-  // физика
-  vy+=0.7; y+=vy;
-  if(y>130){y=130;vy=0;}
-
-  // через 30 секунд — погоня
-  if(time>30*60 && !chase){
-    chase=true;
-    document.body.classList.add("alert");
-    red.style.display="block";
-  }
-
-  // земля
-  ctx.fillStyle="#333";
-  ctx.fillRect(0,170,600,30);
-
-  // динозавр (пиксельный силуэт)
-  if(!ended){
-    ctx.fillStyle="#fff";
-    ctx.fillRect(80,y,24,24);      // тело
-    ctx.fillRect(96,y+6,6,6);      // глаз
-  }
-
-  // тень "годзиллы"
-  if(chase){
-    shadowX+=1.8;
-    ctx.fillStyle="rgba(0,0,0,0.9)";
-    ctx.fillRect(shadowX,90,70,80); // тело
-    ctx.fillRect(shadowX-20,70,40,40); // голова
-    ctx.fillRect(shadowX+20,150,20,30); // нога
-  }
-
-  // если догнала
-  if(shadowX>60 && !ended){
-    badEnding();
-  }
-
-  requestAnimationFrame(loop);
-}
-
-function badEnding(){
-  ended=true;
-  running=false;
-  canvas.style.display="none";
-  document.body.classList.remove("alert");
-  red.style.display="none";
-  ending.style.display="block";
-  t1.textContent="Ты мог помочь нам";
-  t2.textContent="Но ты не помог";
-  t3.textContent="Теперь слишком поздно";
-}
-</script>
+<!-- ПОДКЛЮЧЕНИЕ ЛОГИКИ -->
+<script src="game.js"></script>
 
 </body>
 </html>
