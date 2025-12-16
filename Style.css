@@ -1,0 +1,48 @@
+body{
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:Arial, sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100svh;
+}
+
+#menu{
+  text-align:center;
+}
+
+button{
+  font-size:22px;
+  padding:10px 30px;
+  background:#39ff6a;
+  border:none;
+  cursor:pointer;
+}
+
+#game{
+  display:none;
+  background:#111;
+  border:2px solid #333;
+}
+
+#ending{
+  display:none;
+  text-align:center;
+}
+
+#ending p{
+  opacity:0;
+  margin:10px;
+  font-size:22px;
+  animation:fade 2s forwards;
+}
+
+#ending p:nth-child(2){animation-delay:2s}
+#ending p:nth-child(3){animation-delay:4s}
+
+@keyframes fade{
+  to{opacity:1}
+}
+
